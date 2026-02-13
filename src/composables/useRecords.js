@@ -5,6 +5,8 @@ const records = ref([]);
 
 // Nome da chave para LocalStorage
 const STORAGE_KEY = 'records';
+const categories = ['Estudo', 'Trabalho', 'Exercício', 'Lazer'];
+
 
 function loadFromStorage() {
   const stored = localStorage.getItem(STORAGE_KEY);
@@ -73,5 +75,6 @@ export function useRecords() {
     getRecord,
     updateRecord,
     deleteRecord,
+    categories,
   };
 }

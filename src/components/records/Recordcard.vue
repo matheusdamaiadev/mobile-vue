@@ -3,12 +3,17 @@ defineProps({
   title: String,
   duration: Number,
   date: String,
+  category: String,
 });
 </script>
 
 <template>
   <div class="record-card">
     <h3 class="title">{{ title }}</h3>
+    <p class="category">
+  {{ category }}
+</p>
+
     <div class="meta">
       <span class="duration">⏱️ {{ duration }} min</span>
       <span class="date">📅 {{ date }}</span>
@@ -43,4 +48,14 @@ defineProps({
   font-size: 14px;
   color: #666;
 }
+.category {
+  font-size: 12px;
+  background-color: #e5e7eb;
+  padding: 4px 8px;
+  border-radius: 12px;
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #444;
+}
+
 </style>

@@ -8,122 +8,132 @@ import { useRecords } from '@/composables/useRecords';
 
 const router = useRouter();
 const route = useRoute();
-const { addRecord, getRecord, updateRecord } = useRecords();
+const { addRecord, getRecord, updateRecord, categories } = useRecords();
 
 const isEditMode = computed(() => route.params.id !== 'new');
 
 const form = ref({
-  title: '',
-  duration: '',
-  notes: '',
+    title: '',
+    duration: '',
+    notes: '',
+    category: '',
 });
 
 onMounted(() => {
-  if (isEditMode.value) {
-    const record = getRecord(route.params.id);
-    if (record) {
-      form.value = {
-        title: record.title,
-        duration: record.duration,
-        notes: record.notes || '',
-      };
-    } else {
-      router.push('/records');
+    if (isEditMode.value) {
+        const record = getRecord(route.params.id);
+        if (record) {
+            form.value = {
+                title: record.title,
+                duration: record.duration,
+                notes: record.notes || '',
+                category: record.category || '',
+            };
+        } else {
+            router.push('/records');
+        }
     }
-  }
 });
 
 function handleSubmit() {
-  if (!form.value.title || !form.value.duration) {
-    alert('Preencha os campos obrigatórios');
-    return;
-  }
+    if (!form.value.title || !form.value.duration) {
+        alert('Preencha os campos obrigatórios');
+        return;
+    }
 
-  if (isEditMode.value) {
-    updateRecord(route.params.id, form.value);
-  } else {
-    addRecord(form.value);
-  }
+    if (isEditMode.value) {
+        updateRecord(route.params.id, form.value);
+    } else {
+        addRecord(form.value);
+    }
 
-  router.push('/records');
+    router.push('/records');
 }
 </script>
 
 <template>
-  <div>
-    <AppHeader
-      :title="isEditMode ? 'Editar Registro' : 'Novo Registro'"
-      show-back
-      @back="router.back()"
-    />
+    <div>
+        <AppHeader :title="isEditMode ? 'Editar Registro' : 'Novo Registro'" show-back @back="router.back()" />
 
-    <div class="page">
-      <form @submit.prevent="handleSubmit" class="form">
-        <AppInput
-          v-model="form.title"
-          label="Título"
-          placeholder="Ex: Estudar Vue.js"
-          required
-        />
+        <div class="page">
+            <form @submit.prevent="handleSubmit" class="form">
+                <AppInput v-model="form.title" label="Título" placeholder="Ex: Estudar Vue.js" required />
 
-        <AppInput
-          v-model.number="form.duration"
-          label="Duração (minutos)"
-          type="number"
-          placeholder="Ex: 60"
-          required
-        />
+                <AppInput v-model.number="form.duration" label="Duração (minutos)" type="number" placeholder="Ex: 60"
+                    required />
 
-        <div class="textarea-group">
-          <label class="label">Observações</label>
-          <textarea
-            v-model="form.notes"
-            rows="4"
-            class="textarea"
-            placeholder="Adicione observações sobre a atividade..."
-          ></textarea>
+                <div class="textarea-group">
+                    <label class="label">Observações</label>
+                    <textarea v-model="form.notes" rows="4" class="textarea"
+                        placeholder="Adicione observações sobre a atividade..."></textarea>
+                </div>
+                <select v-model="form.category" class="select">
+                    <option disabled value="">Selecione uma categoria</option>
+                    <option v-for="cat in categories" :key="cat" :value="cat">
+                        {{ cat }}
+                    </option>
+                </select>
+
+
+
+                <AppButton type="submit">
+                    {{ isEditMode ? 'Salvar alterações' : 'Criar registro' }}
+                </AppButton>
+            </form>
         </div>
-
-        <AppButton type="submit">
-          {{ isEditMode ? 'Salvar alterações' : 'Criar registro' }}
-        </AppButton>
-      </form>
     </div>
-  </div>
 </template>
 
 <style scoped>
 .form {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
 }
 
 .textarea-group {
-  margin-bottom: 16px;
+    margin-bottom: 16px;
 }
 
 .label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
 }
 
 .textarea {
-  width: 100%;
-  padding: 12px 16px;
-  font-size: 16px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  font-family: inherit;
-  resize: vertical;
-  transition: border-color 0.2s;
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.2s;
 }
 
 .textarea:focus {
-  outline: none;
-  border-color: #0b5cff;
+    outline: none;
+    border-color: #0b5cff;
 }
+.select {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 16px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: white;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    margin-bottom: 16px;
+}
+
+.select:focus {
+    outline: none;
+    border-color: #0b5cff;
+}
+
 </style>
