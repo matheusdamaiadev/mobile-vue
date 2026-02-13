@@ -5,6 +5,8 @@ import AppHeader from '@/components/layout/AppHeader.vue';
 import AppInput from '@/components/forms/AppInput.vue';
 import AppButton from '@/components/forms/AppButton.vue';
 import { useRecords } from '@/composables/useRecords';
+import { z } from 'zod';
+
 
 const router = useRouter();
 const route = useRoute();
@@ -34,34 +36,59 @@ onMounted(() => {
         }
     }
 });
+const schema = z.object({
+    title: z.string().min(3, 'Mínimo 3 caracteres'),
+    duration: z
+        .number({ invalid_type_error: 'Duração obrigatória' })
+        .min(1, 'Duração deve ser maior que 0'),
+    category: z.string().min(1, 'Selecione uma categoria'),
+});
+const errors = ref({});
 
 function handleSubmit() {
-    if (!form.value.title || !form.value.duration) {
-        alert('Preencha os campos obrigatórios');
-        return;
+    errors.value = {};
+
+    try {
+        const validatedData = schema.parse({
+            ...form.value,
+            duration: Number(form.value.duration),
+        });
+
+        if (isEditMode.value) {
+            updateRecord(route.params.id, validatedData);
+        } else {
+            addRecord(validatedData);
+        }
+
+        router.push('/records');
+
+    } catch (err) {
+        if (err.issues) {
+            err.issues.forEach((e) => {
+                errors.value[e.path[0]] = e.message;
+            });
+        }
     }
 
-    if (isEditMode.value) {
-        updateRecord(route.params.id, form.value);
-    } else {
-        addRecord(form.value);
-    }
-
-    router.push('/records');
 }
+
+
 </script>
 
 <template>
     <div>
         <AppHeader :title="isEditMode ? 'Editar Registro' : 'Novo Registro'" show-back @back="router.back()" />
-
         <div class="page">
             <form @submit.prevent="handleSubmit" class="form">
                 <AppInput v-model="form.title" label="Título" placeholder="Ex: Estudar Vue.js" required />
-
+                <p v-if="errors.title" class="error">
+                    {{ errors.title }}
+                </p>
                 <AppInput v-model.number="form.duration" label="Duração (minutos)" type="number" placeholder="Ex: 60"
                     required />
-
+                <p v-if="errors.duration" class="error">
+                    {{ errors.duration }}
+                </p>
                 <div class="textarea-group">
                     <label class="label">Observações</label>
                     <textarea v-model="form.notes" rows="4" class="textarea"
@@ -73,9 +100,9 @@ function handleSubmit() {
                         {{ cat }}
                     </option>
                 </select>
-
-
-
+                <p v-if="errors.category" class="error">
+                    {{ errors.category }}
+                </p>
                 <AppButton type="submit">
                     {{ isEditMode ? 'Salvar alterações' : 'Criar registro' }}
                 </AppButton>
@@ -118,6 +145,7 @@ function handleSubmit() {
     outline: none;
     border-color: #0b5cff;
 }
+
 .select {
     width: 100%;
     min-height: 48px;
@@ -136,4 +164,10 @@ function handleSubmit() {
     border-color: #0b5cff;
 }
 
+.error {
+    color: #d93025;
+    font-size: 14px;
+    margin-top: 4px;
+    margin-bottom: 12px;
+}
 </style>
