@@ -1,22 +1,34 @@
 <script setup>
-defineProps({
+import { computed } from 'vue';
+
+const props = defineProps({
   title: String,
   duration: Number,
   date: String,
   category: String,
 });
+
+const formattedDate = computed(() => {
+  return new Date(props.date).toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+});
 </script>
+
 
 <template>
   <div class="record-card">
     <h3 class="title">{{ title }}</h3>
     <p class="category">
-  {{ category }}
-</p>
+      {{ category }}
+    </p>
 
     <div class="meta">
       <span class="duration">⏱️ {{ duration }} min</span>
-      <span class="date">📅 {{ date }}</span>
+      <span class="date">📅 {{ formattedDate }}
+      </span>
     </div>
   </div>
 </template>
@@ -40,6 +52,10 @@ defineProps({
   font-weight: 600;
   margin-bottom: 8px;
   color: #111;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .meta {
@@ -48,6 +64,7 @@ defineProps({
   font-size: 14px;
   color: #666;
 }
+
 .category {
   font-size: 12px;
   background-color: #e5e7eb;
@@ -57,5 +74,4 @@ defineProps({
   margin-bottom: 8px;
   color: #444;
 }
-
 </style>

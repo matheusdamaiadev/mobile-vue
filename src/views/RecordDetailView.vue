@@ -87,6 +87,10 @@ function handleDelete() {
 .title {
     font-size: 24px;
     margin-bottom: 20px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .info {
