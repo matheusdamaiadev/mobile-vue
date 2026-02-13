@@ -161,30 +161,24 @@ const finalRecords = computed(() => {
     outline: none;
     border-color: #0b5cff;
 }
-/* ENTRADA E SAÍDA */
 .list-enter-active,
 .list-leave-active {
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ENTRANDO */
 .list-enter-from {
   opacity: 0;
   transform: translateY(20px);
 }
 
-/* SAINDO */
 .list-leave-to {
   opacity: 0;
   transform: translateY(-20px);
 }
-
-/* IMPORTANTE: animação ao reordenar */
 .list-move {
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Evita bug visual durante saída */
 .list-leave-active {
   position: absolute;
 }

@@ -21,6 +21,13 @@ const routes = [
     name: 'record-edit',
     component: () => import('@/views/RecordFormView.vue'),
   },
+  {
+  path: '/dashboard',
+  name: 'dashboard',
+  component: () => import('@/views/DashboardView.vue')
+}
+
+
 ];
 
 const router = createRouter({
