@@ -21,6 +21,7 @@ const { totalRecords, totalDuration } = useRecords();
           <div class="stat-value">{{ totalRecords }}</div>
           <div class="stat-label">Registros</div>
         </div>
+
         <div class="stat-card">
           <div class="stat-value">{{ totalDuration }}</div>
           <div class="stat-label">Minutos</div>
@@ -31,6 +32,7 @@ const { totalRecords, totalDuration } = useRecords();
         <RouterLink to="/records" class="menu-item">
           📋 Ver registros
         </RouterLink>
+
         <RouterLink to="/records/new/edit" class="menu-item">
           ➕ Novo registro
         </RouterLink>
@@ -48,10 +50,11 @@ const { totalRecords, totalDuration } = useRecords();
 .hero h2 {
   font-size: 24px;
   margin-bottom: 8px;
+  color: var(--text-color);
 }
 
 .hero p {
-  color: #666;
+  color: var(--muted-text);
 }
 
 .stats {
@@ -62,11 +65,13 @@ const { totalRecords, totalDuration } = useRecords();
 }
 
 .stat-card {
-  background: white;
+  background: var(--card-bg);
   padding: 20px;
   border-radius: 12px;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border-color);
+  transition: background 0.3s ease, border 0.3s ease;
 }
 
 .stat-value {
@@ -78,7 +83,7 @@ const { totalRecords, totalDuration } = useRecords();
 
 .stat-label {
   font-size: 14px;
-  color: #666;
+  color: var(--muted-text);
 }
 
 .menu {
@@ -90,13 +95,17 @@ const { totalRecords, totalDuration } = useRecords();
 .menu-item {
   display: block;
   padding: 20px;
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   text-decoration: none;
-  color: #111;
+  color: var(--text-color);
   font-weight: 600;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
-  transition: transform 0.1s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border-color);
+  transition: 
+    transform 0.1s ease,
+    background 0.3s ease,
+    border 0.3s ease;
 }
 
 .menu-item:active {

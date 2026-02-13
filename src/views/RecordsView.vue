@@ -4,150 +4,173 @@ import AppHeader from '@/components/layout/AppHeader.vue';
 import RecordCard from '@/components/records/RecordCard.vue';
 import { useRecords } from '@/composables/useRecords';
 import { ref, computed } from 'vue';
+
 const router = useRouter();
 const { records } = useRecords();
+
 const sortType = ref('date');
 const searchQuery = ref('');
 
-
 const finalRecords = computed(() => {
-    // 1️⃣ Filtra
-    let result = records.value.filter((r) =>
-        r.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+  // 1️⃣ Filtra
+  let result = records.value.filter((r) =>
+    r.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+
+  // 2️⃣ Ordena
+  if (sortType.value === 'duration') {
+    result = result.sort((a, b) => b.duration - a.duration);
+  } else {
+    result = result.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
     );
+  }
 
-    // 2️⃣ Ordena
-    if (sortType.value === 'duration') {
-        result = result.sort((a, b) => b.duration - a.duration);
-    } else {
-        result = result.sort(
-            (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
-        );
-    }
-
-    return result;
+  return result;
 });
-
-
-function formatDate(isoDate) {
-    return new Date(isoDate).toLocaleDateString('pt-BR');
-}
 </script>
 
 <template>
-    <div>
-        <AppHeader title="Meus Registros" show-back @back="router.push('/')" />
+  <div>
+    <AppHeader title="Meus Registros" show-back @back="router.push('/')" />
 
+    <div class="page">
+      <input
+        v-model="searchQuery"
+        placeholder="Buscar..."
+        class="search"
+      />
 
-        <div class="page">
-            <input v-model="searchQuery" placeholder="Buscar..." class="search" />
+      <select v-model="sortType" class="select">
+        <option value="date">Mais recentes</option>
+        <option value="duration">Maior duração</option>
+      </select>
 
-            <select v-model="sortType" class="select">
-                <option value="date">Mais recentes</option>
-                <option value="duration">Maior duração</option>
-            </select>
-            <div v-if="finalRecords.length > 0" class="list">
-                <RouterLink v-for="record in finalRecords" :key="record.id" :to="`/records/${record.id}`" class="link">
-                    <RecordCard :title="record.title" :duration="record.duration" :date="record.createdAt"
-                        :category="record.category" />
+      <div v-if="finalRecords.length > 0" class="list">
+        <RouterLink
+          v-for="record in finalRecords"
+          :key="record.id"
+          :to="`/records/${record.id}`"
+          class="link"
+        >
+          <RecordCard
+            :title="record.title"
+            :duration="record.duration"
+            :date="record.createdAt"
+            :category="record.category"
+          />
+        </RouterLink>
+      </div>
 
-                </RouterLink>
-            </div>
+      <div v-else class="empty">
+        <p>📭</p>
+        <p>Nenhum registro ainda</p>
+        <RouterLink to="/records/new/edit" class="btn">
+          Criar primeiro registro
+        </RouterLink>
+      </div>
 
-            <div v-else class="empty">
-                <p>📭</p>
-                <p>Nenhum registro ainda</p>
-                <RouterLink to="/records/new/edit" class="btn">
-                    Criar primeiro registro
-                </RouterLink>
-            </div>
-
-            <RouterLink to="/records/new/edit" class="fab"> + </RouterLink>
-        </div>
+      <RouterLink to="/records/new/edit" class="fab"> + </RouterLink>
     </div>
+  </div>
 </template>
 
 <style scoped>
 .list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .link {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .empty {
-    text-align: center;
-    padding: 60px 20px;
-    color: #999;
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted-text);
 }
 
 .empty p:first-child {
-    font-size: 48px;
-    margin-bottom: 16px;
+  font-size: 48px;
+  margin-bottom: 16px;
 }
 
 .btn {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 12px 24px;
-    background: #0b5cff;
-    color: white;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 24px;
+  background: #0b5cff;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
 }
 
 .fab {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    width: 56px;
-    height: 56px;
-    background: #0b5cff;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 32px;
-    text-decoration: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s;
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  background: #0b5cff;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  text-decoration: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
 }
 
 .fab:active {
-    transform: scale(0.9);
+  transform: scale(0.9);
 }
 
+/* SELECT */
 .select {
-
-    width: 100%;
-    min-height: 48px;
-    padding: 12px 40px 12px 16px;
-    font-size: 16px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    background-color: white;
-    margin-bottom: 16px;
-    font-family: inherit;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 40px 12px 16px;
+  font-size: 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  margin-bottom: 16px;
+  font-family: inherit;
+  transition: border-color 0.2s ease, background 0.3s ease, color 0.3s ease;
 }
+
+.select:focus {
+  outline: none;
+  border-color: #0b5cff;
+}
+
+/* SEARCH */
 .search {
-    width: 100%;
-    min-height: 48px;
-    padding: 12px 16px;
-    font-size: 16px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    font-family: inherit;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-family: inherit;
+  background: var(--input-bg);
+  color: var(--text-color);
+  transition: border-color 0.2s ease, background 0.3s ease, color 0.3s ease;
+}
+
+.search::placeholder {
+  color: var(--muted-text);
 }
 
 .search:focus {
-    outline: none;
-    border-color: #0b5cff;
+  outline: none;
+  border-color: #0b5cff;
 }
-
 </style>

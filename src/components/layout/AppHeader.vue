@@ -8,6 +8,24 @@ defineProps({
 });
 
 defineEmits(['back']);
+import { ref, onMounted } from 'vue';
+
+const darkMode = ref(false);
+
+onMounted(() => {
+  const saved = localStorage.getItem('darkMode');
+  if (saved === 'true') {
+    darkMode.value = true;
+    document.body.classList.add('dark-mode');
+  }
+});
+
+function toggleDarkMode() {
+  darkMode.value = !darkMode.value;
+  document.body.classList.toggle('dark-mode');
+  localStorage.setItem('darkMode', darkMode.value);
+}
+
 </script>
 
 <template>
@@ -15,6 +33,10 @@ defineEmits(['back']);
     <button v-if="showBack" @click="$emit('back')" class="btn-back">←</button>
     <h1>{{ title }}</h1>
     <div class="spacer"></div>
+    <button @click="toggleDarkMode" class="theme-btn">
+  {{ darkMode ? '☀️' : '🌙' }}
+</button>
+
   </header>
 </template>
 
@@ -53,4 +75,11 @@ defineEmits(['back']);
 .spacer {
   width: 40px; /* Espaço para balancear o botão de voltar */
 }
+.theme-btn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
 </style>

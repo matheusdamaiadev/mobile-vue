@@ -17,30 +17,33 @@ const formattedDate = computed(() => {
 });
 </script>
 
-
 <template>
   <div class="record-card">
     <h3 class="title">{{ title }}</h3>
+
     <p class="category">
       {{ category }}
     </p>
 
     <div class="meta">
       <span class="duration">⏱️ {{ duration }} min</span>
-      <span class="date">📅 {{ formattedDate }}
-      </span>
+      <span class="date">📅 {{ formattedDate }}</span>
     </div>
   </div>
 </template>
 
 <style scoped>
 .record-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
-  transition: transform 0.1s;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  transition: 
+    transform 0.1s ease,
+    background 0.3s ease,
+    box-shadow 0.3s ease;
   cursor: pointer;
+  border: 1px solid var(--border-color);
 }
 
 .record-card:active {
@@ -51,7 +54,7 @@ const formattedDate = computed(() => {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 8px;
-  color: #111;
+  color: var(--text-color);
 
   white-space: nowrap;
   overflow: hidden;
@@ -62,16 +65,22 @@ const formattedDate = computed(() => {
   display: flex;
   gap: 16px;
   font-size: 14px;
-  color: #666;
+  color: var(--muted-text);
 }
 
 .category {
   font-size: 12px;
-  background-color: #e5e7eb;
+  background-color: var(--category-bg);
   padding: 4px 8px;
   border-radius: 12px;
   display: inline-block;
   margin-bottom: 8px;
-  color: #444;
+  color: var(--text-color);
+  transition: background 0.3s ease;
+}
+
+.date,
+.duration {
+  color: var(--muted-text);
 }
 </style>

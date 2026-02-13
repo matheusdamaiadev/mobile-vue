@@ -26,6 +26,7 @@ const value = computed({
       {{ label }}
       <span v-if="required" class="required">*</span>
     </label>
+
     <input
       v-model="value"
       :type="type"
@@ -46,7 +47,8 @@ const value = computed({
   margin-bottom: 6px;
   font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: var(--text-color);
+  transition: color 0.3s ease;
 }
 
 .required {
@@ -58,10 +60,21 @@ const value = computed({
   min-height: 48px;
   padding: 12px 16px;
   font-size: 16px;
-  border: 2px solid #ddd;
+
+  border: 2px solid var(--border-color);
   border-radius: 8px;
-  background: white;
-  transition: border-color 0.2s;
+
+  background: var(--input-bg);
+  color: var(--text-color);
+
+  transition: 
+    border-color 0.2s ease,
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+.input::placeholder {
+  color: var(--muted-text);
 }
 
 .input:focus {
