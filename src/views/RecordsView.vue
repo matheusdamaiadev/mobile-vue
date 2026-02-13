@@ -3,9 +3,22 @@ import { RouterLink, useRouter } from 'vue-router';
 import AppHeader from '@/components/layout/AppHeader.vue';
 import RecordCard from '@/components/records/RecordCard.vue';
 import { useRecords } from '@/composables/useRecords';
-
+import { ref, computed } from 'vue';
 const router = useRouter();
 const { records } = useRecords();
+const sortType = ref('date');
+
+const sortedRecords = computed(() => {
+    if (sortType.value === 'duration') {
+        return [...records.value].sort((a, b) => b.duration - a.duration);
+    }
+
+    // padrão: por data (mais recente primeiro)
+    return [...records.value].sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+    );
+});
+
 
 function formatDate(isoDate) {
     return new Date(isoDate).toLocaleDateString('pt-BR');
@@ -15,10 +28,15 @@ function formatDate(isoDate) {
 <template>
     <div>
         <AppHeader title="Meus Registros" show-back @back="router.push('/')" />
+       
 
         <div class="page">
+         <select v-model="sortType" class="select">
+            <option value="date">Mais recentes</option>
+            <option value="duration">Maior duração</option>
+        </select>
             <div v-if="records.length > 0" class="list">
-                <RouterLink v-for="record in records" :key="record.id" :to="`/records/${record.id}`" class="link">
+                <RouterLink v-for="record in sortedRecords" :key="record.id" :to="`/records/${record.id}`" class="link">
                     <RecordCard :title="record.title" :duration="record.duration" :date="record.createdAt"
                         :category="record.category" />
 
@@ -92,4 +110,17 @@ function formatDate(isoDate) {
 .fab:active {
     transform: scale(0.9);
 }
+.select {
+
+    width: 100%;
+    min-height: 48px;
+     padding: 12px 40px 12px 16px; 
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: white;
+    margin-bottom: 16px;
+    font-family: inherit;
+}
+
 </style>
