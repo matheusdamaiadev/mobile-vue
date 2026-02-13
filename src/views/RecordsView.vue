@@ -7,16 +7,25 @@ import { ref, computed } from 'vue';
 const router = useRouter();
 const { records } = useRecords();
 const sortType = ref('date');
+const searchQuery = ref('');
 
-const sortedRecords = computed(() => {
+
+const finalRecords = computed(() => {
+    // 1️⃣ Filtra
+    let result = records.value.filter((r) =>
+        r.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+
+    // 2️⃣ Ordena
     if (sortType.value === 'duration') {
-        return [...records.value].sort((a, b) => b.duration - a.duration);
+        result = result.sort((a, b) => b.duration - a.duration);
+    } else {
+        result = result.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+        );
     }
 
-    // padrão: por data (mais recente primeiro)
-    return [...records.value].sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
-    );
+    return result;
 });
 
 
@@ -28,15 +37,17 @@ function formatDate(isoDate) {
 <template>
     <div>
         <AppHeader title="Meus Registros" show-back @back="router.push('/')" />
-       
+
 
         <div class="page">
-         <select v-model="sortType" class="select">
-            <option value="date">Mais recentes</option>
-            <option value="duration">Maior duração</option>
-        </select>
-            <div v-if="records.length > 0" class="list">
-                <RouterLink v-for="record in sortedRecords" :key="record.id" :to="`/records/${record.id}`" class="link">
+            <input v-model="searchQuery" placeholder="Buscar..." class="search" />
+
+            <select v-model="sortType" class="select">
+                <option value="date">Mais recentes</option>
+                <option value="duration">Maior duração</option>
+            </select>
+            <div v-if="finalRecords.length > 0" class="list">
+                <RouterLink v-for="record in finalRecords" :key="record.id" :to="`/records/${record.id}`" class="link">
                     <RecordCard :title="record.title" :duration="record.duration" :date="record.createdAt"
                         :category="record.category" />
 
@@ -110,17 +121,33 @@ function formatDate(isoDate) {
 .fab:active {
     transform: scale(0.9);
 }
+
 .select {
 
     width: 100%;
     min-height: 48px;
-     padding: 12px 40px 12px 16px; 
+    padding: 12px 40px 12px 16px;
     font-size: 16px;
     border: 2px solid #ddd;
     border-radius: 8px;
     background-color: white;
     margin-bottom: 16px;
     font-family: inherit;
+}
+.search {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 16px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    font-family: inherit;
+}
+
+.search:focus {
+    outline: none;
+    border-color: #0b5cff;
 }
 
 </style>
