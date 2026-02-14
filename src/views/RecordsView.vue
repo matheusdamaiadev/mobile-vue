@@ -6,14 +6,14 @@ import { useRecords } from '@/composables/useRecords';
 import { ref, computed } from 'vue';
 
 const router = useRouter();
-const { records } = useRecords();
+const { getLooseRecords } = useRecords(); // 👈 usa apenas registros sem projeto
 
 const sortType = ref('date');
 const searchQuery = ref('');
 
 const finalRecords = computed(() => {
     // 1️⃣ Filtra
-    let result = records.value.filter((r) =>
+    let result = getLooseRecords().filter((r) =>
         r.title.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
 
@@ -25,7 +25,6 @@ const finalRecords = computed(() => {
             (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         );
     }
-
     return result;
 });
 </script>
@@ -44,11 +43,14 @@ const finalRecords = computed(() => {
 
             <TransitionGroup v-if="finalRecords.length > 0" name="list" tag="div" class="list">
                 <RouterLink v-for="record in finalRecords" :key="record.id" :to="`/records/${record.id}`" class="link">
-                    <RecordCard :title="record.title" :duration="record.duration" :date="record.createdAt"
-                        :category="record.category" />
+                    <RecordCard 
+                        :title="record.title" 
+                        :duration="record.duration" 
+                        :date="record.createdAt"
+                        :category="record.category" 
+                    />
                 </RouterLink>
             </TransitionGroup>
-
 
             <div v-else class="empty">
                 <p>📭</p>
@@ -102,21 +104,25 @@ const finalRecords = computed(() => {
     right: 24px;
     width: 56px;
     height: 56px;
-    background: #0b5cff;
+    border-radius: 50%; /* bolinha */
+    background: #0b5cff; /* azul do site */
     color: white;
-    border-radius: 50%;
+    font-weight: 600;
+    font-size: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 32px;
     text-decoration: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* sombra suave */
+    transition: transform 0.2s ease, background 0.3s ease;
+    cursor: pointer;
 }
 
+/* efeito de clique igual aos outros botões */
 .fab:active {
-    transform: scale(0.9);
+    transform: scale(0.95);
 }
+
 
 /* SELECT */
 .select {
@@ -182,5 +188,4 @@ const finalRecords = computed(() => {
 .list-leave-active {
   position: absolute;
 }
-
 </style>

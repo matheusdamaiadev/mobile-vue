@@ -22,12 +22,27 @@ const routes = [
     component: () => import('@/views/RecordFormView.vue'),
   },
   {
-  path: '/dashboard',
-  name: 'dashboard',
-  component: () => import('@/views/DashboardView.vue')
-}
+    path: '/dashboard',
+    name: 'dashboard',
+    component: () => import('@/views/DashboardView.vue'),
+  }, // ✅ vírgula importante aqui
 
-
+  // 🔹 PROJETOS
+  {
+    path: '/projects',
+    name: 'projects',
+    component: () => import('@/views/ProjectsView.vue'),
+  },
+  {
+    path: '/projects/create',
+    name: 'project-create',
+    component: () => import('@/views/CreateProjectView.vue'),
+  },
+  {
+    path: '/projects/:id',
+    name: 'project-detail',
+    component: () => import('@/views/ProjectDetailView.vue'),
+  },
 ];
 
 const router = createRouter({

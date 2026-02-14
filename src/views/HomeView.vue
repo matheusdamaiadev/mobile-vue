@@ -2,8 +2,10 @@
 import { RouterLink } from 'vue-router';
 import AppHeader from '@/components/layout/AppHeader.vue';
 import { useRecords } from '@/composables/useRecords';
+import { useProjects } from '@/composables/useProjects';
 
 const { totalRecords, totalDuration } = useRecords();
+const { totalProjects } = useProjects();
 </script>
 
 <template>
@@ -13,9 +15,10 @@ const { totalRecords, totalDuration } = useRecords();
     <div class="page">
       <div class="hero">
         <h2>Bem-vindo!</h2>
-        <p>Registre e acompanhe suas atividades diárias</p>
+        <p>Registre e acompanhe suas atividades e projetos</p>
       </div>
 
+      <!-- STATS -->
       <div class="stats">
         <div class="stat-card">
           <div class="stat-value">{{ totalRecords }}</div>
@@ -26,8 +29,14 @@ const { totalRecords, totalDuration } = useRecords();
           <div class="stat-value">{{ totalDuration }}</div>
           <div class="stat-label">Minutos</div>
         </div>
+
+        <div class="stat-card">
+          <div class="stat-value">{{ totalProjects }}</div>
+          <div class="stat-label">Projetos</div>
+        </div>
       </div>
 
+      <!-- MENU -->
       <nav class="menu">
         <RouterLink to="/records" class="menu-item">
           📋 Ver registros
@@ -35,6 +44,14 @@ const { totalRecords, totalDuration } = useRecords();
 
         <RouterLink to="/records/new/edit" class="menu-item">
           ➕ Novo registro
+        </RouterLink>
+
+        <RouterLink to="/projects" class="menu-item">
+          📁 Ver projetos
+        </RouterLink>
+
+        <RouterLink to="/projects/create" class="menu-item">
+          🚀 Criar projeto
         </RouterLink>
       </nav>
     </div>
@@ -59,7 +76,7 @@ const { totalRecords, totalDuration } = useRecords();
 
 .stats {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin-bottom: 32px;
 }
